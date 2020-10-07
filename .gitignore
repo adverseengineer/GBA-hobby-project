@@ -1,5 +1,7 @@
+.vscode/
 build/
-doc/
+doc*/
 test/
 *.elf
 *.gba
+.gitignore
