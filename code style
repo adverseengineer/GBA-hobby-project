@@ -1,3 +1,0 @@
-all header guard names must be the name of the file in all capped appended with _H. Example GBA_MACROS_H.
-all define names must be all caps
-all defines of pointers to registers must end with _REG
