@@ -8,11 +8,10 @@ Nick Sells
 #define BUTTONS
 
 //define a pointer to the button register
-volatile unsigned short* buttons = (volatile unsigned short*) 0x04000130;
+#define BTN_REG (*(volatile unsigned short*) 0x04000130)
 
-//define a macro for each of the buttons.
 //each button is represented by a single bit
-//you can AND any of these into the button register to get those button's states
+//you can AND any of these into the button register to get the button's state
 #define BUTTON_A (1 << 0)
 #define BUTTON_B (1 << 1)
 #define BUTTON_SELECT (1 << 2)
@@ -25,14 +24,14 @@ volatile unsigned short* buttons = (volatile unsigned short*) 0x04000130;
 #define BUTTON_L (1 << 9)
 
 //checks whether a button has been pushed or not
-unsigned char button_pressed(unsigned short button)
+static inline unsigned char button_pressed(unsigned short button)
 {
 	//AND the button register with the button constant we want
-	//if this value is zero, it's not pressed
-	if (*buttons & button == 0)
-		return 1;
-	else {
-		return 0;
+	//if the bit is 0, the button is pressed, so negate the AND
+	return ~(BTN_REG & button);
 }
+
+//TODO: write a function that only returns true in the frame the button is first pressed or released
+//TODO: find a way to implement input sequences; eg. punch in the konami code to enable debug features
 
 #endif

@@ -4,8 +4,10 @@ Nick Sells
 10/7/2020
 */
 
-#ifndef TILES
-#define TILES
+#ifndef TILES_H
+#define TILES_H
+
+#include "gba_macros.h"
 
 /*
 The GBA has three tile modes.
@@ -26,46 +28,54 @@ To use them to enable a background, you OR them into the display_control registe
 #define BG2_ENABLE 0x400
 #define BG3_ENABLE 0x800
 
-//the display control pointer points to the gba graphics register
-volatile unsigned long* display_control = (volatile unsigned long*) 0x4000000;
+//define a pointer to the GBA graphics control register
+#define DCTRL_REG (*(volatile unsigned long*) 0x4000000);
 //pointer to the GBA color palette register
 volatile unsigned short* bg_palette = (volatile unsigned short*) 0x5000000;
 //GBA color palettes are always 256 colors
 #define PALETTE_SIZE 256
 
 
-volatile unsigned short* bg0_control = (volatile unsigned short*) 0x4000008;
-volatile unsigned short* bg1_control = (volatile unsigned short*) 0x400000a;
-volatile unsigned short* bg2_control = (volatile unsigned short*) 0x400000c;
-volatile unsigned short* bg3_control = (volatile unsigned short*) 0x400000e;
+#define bg0_control (*(volatile unsigned short*) 0x4000008)
+#define bg1_control (*(volatile unsigned short*) 0x400000a)
+#define bg2_control (*(volatile unsigned short*) 0x400000c)
+#define bg3_control (*(volatile unsigned short*) 0x400000e)
 
-/*
-There are two registers that control the scrolling of each background layer
-Writing to these will move the corresponding background in the corresponding direction
-*/
-volatile short* bg0_x_scroll = (volatile short*) 0x4000010;
-volatile short* bg0_y_scroll = (volatile short*) 0x4000012;
-volatile short* bg1_x_scroll = (volatile short*) 0x4000014;
-volatile short* bg1_y_scroll = (volatile short*) 0x4000016;
-volatile short* bg2_x_scroll = (volatile short*) 0x4000018;
-volatile short* bg2_y_scroll = (volatile short*) 0x400001a;
-volatile short* bg3_x_scroll = (volatile short*) 0x400001c;
-volatile short* bg3_y_scroll = (volatile short*) 0x400001e;
+//each of the four backgound layers has two registers to control their movement on the x and y axis
+//writing to these will move the corresponding background in the corresponding direction
+#define bg0_x_scroll (*(volatile short*) 0x4000010)
+#define bg0_y_scroll (*(volatile short*) 0x4000012)
+#define bg1_x_scroll (*(volatile short*) 0x4000014)
+#define bg1_y_scroll (*(volatile short*) 0x4000016)
+#define bg2_x_scroll (*(volatile short*) 0x4000018)
+#define bg2_y_scroll (*(volatile short*) 0x400001a)
+#define bg3_x_scroll (*(volatile short*) 0x400001c)
+#define bg3_y_scroll (*(volatile short*) 0x400001e)
 
-void scroll_bg(int bg, int x, int y)
+//scroll the specified background the given amounts
+static inline void scroll_bg(int bg, int x, int y)
 {
 	//TODO:
 }
 
-//TODO:
-//in all modes besides the bitmap modes, the gba divides the video memory into 4 character blocks, which are each divided into 8 screen blocks
+//sets the backgrounds position to the given coords
+static inline void move_bg(int bg, int x, int y)
+{
+	//TODO:
+}
+
+//TODO: why do i need this?
+//FIXME: give this a better name
+//when using tile modes, the GBA divides the VRAM into 4 blocks that are used to store the data for each background layer
 //to help keep these straight, these methods return pointers to the addresses of these blocks
-volatile unsigned short* char_block(unsigned long block)
+static inline volatile unsigned short* getBgBlockPtr(unsigned long block)
 {
 	return (volatile unsigned short*) (0x6000000 + (block * 0x4000));
 }
 
-volatile unsigned short* screen_block(unsigned long block)
+//FIXME: why is this function necessary? i got it from the finlayson tutorial
+//each char are each divided into 8 screen blocks
+static inline volatile unsigned short* screen_block(unsigned long block)
 {
 	return (volatile unsigned short*) (0x6000000 + (block * 0x800));
 }
