@@ -9,4 +9,4 @@ In `if` statements, always evaluate the condition most likely to be false first
 Always use `typedef` over `#define` when possible  
 All `#define` identifiers must be in all caps  
 All `#define`'s of hardware registers must use the same name as those on the Coranac GBA tutorial. (They just seem more professional)  
-All header guard identifiers must be the name of the file in all caps appended with `_H`.(Example: `GBA_MACROS_H`)  
+All header guard identifiers must be the full name of the file in all caps with the periods changed to underscores. (Example: `GBA_MACROS_H`)  
