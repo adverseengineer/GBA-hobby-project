@@ -1,7 +1,0 @@
-.vscode/
-assets/
-build/
-doc*/
-test/
-*.elf
-.gitignore
