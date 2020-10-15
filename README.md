@@ -9,6 +9,7 @@ Put all opening curly braces at the end of the line preceding it
 Omit curly braces when they only enclose one line  
 In `if` statements, always evaluate the condition most likely to be false first  
 Use `const` on all function parameters that are not intended to be changed  
+Any function that takes zero parameters must be fed `void` anyway. (Example: `int main(void){}`)  
 Make funcions `inline` whenever possible    
 Always use the shorthand types in `gba_macros.h`  
 All `#define` identifiers must be in all caps  
