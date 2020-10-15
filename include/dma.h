@@ -7,6 +7,10 @@ Nick Sells
 #ifndef DMA_H
 #define DMA_H
 
+#include "gba_macros.h"
+
+//TODO: clean up this whole file
+
 //dma enable flag
 #define DMA_ENABLE 0x80000000
 
@@ -20,13 +24,13 @@ Nick Sells
 #define dma_count (*(volatile unsigned int*) 0x40000DC)
 
 /* copy data using DMA */
-static inline void memcpy16_dma(unsigned short* dest, unsigned short* source, int amount)
+static inline void dma_memcpy16(volatile u16* dest, volatile u16* source, const u32 amount)
 {
 	dma_source = (unsigned int) source;
     dma_destination = (unsigned int) dest;
     dma_count = amount | DMA_16 | DMA_ENABLE;
 }
 
-//TODO:
+//TODO: finish this file
 
 #endif
