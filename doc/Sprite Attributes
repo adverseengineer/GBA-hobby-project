@@ -1,0 +1,43 @@
+The GBA can handle up to 128 sprites
+Sprites must be stored in OAM (object attribute memory) to be rendered
+OAM has just enough room to store 128 sets of 4 16-bit values. (16*4*128)/8 = 1 KB
+Each one is made up of 4 16-bit attributes that pack all kinds of data into their bits
+
+Attribute 0
+	bits 0-7	y coordinate
+	bits 8,9	affine
+		used for specifying affine transformations
+	bits 10,11	effect
+		toggles between alpha-blending and masking
+	bit 12		mosaic
+		toggles the "mosaic effect"
+	bit 13		color mode
+		0 = 16-color
+		1 = 256-color
+	bits 14,15	shape
+		see below
+Attribute 1
+	bits 0-7	x coordinate
+	bits 9-11	unused
+	bit 12		h-flip
+		flips the sprite horizontally
+	bit 13		v-flip
+		flips the sprite vertically
+	bits 14,15	size
+Attribute 2
+	bits 0-9	tile index
+		the index of the first tile in the sprite.
+	bits 10,11	priority
+		used for layering. low appears over high. sprites appear over backgrounds of the same priority
+	bits 12-15	palette bank
+		only used for 16-bit color sprites
+Attribute 3
+	used internally by the gba to handle affine transformations
+======================================================================================================
+
+The dimensions of the sprite are determined by the size and shape properties, as per this table:
+			Size
+			0		1		2		3
+Shape	0	8x8		16x16	32x32	64x64
+		1	16x8	32x8	32x16	64x32
+		2	8x16	8x32	16x32	32x64

@@ -9,51 +9,44 @@ Nick Sells
 
 #include "gba_macros.h"
 
-/*
-The GBA has three tile modes.
-Mode 0:	four tile layers, but none of them can be rotated or scaled
-Mode 1: three tile layers, but only one of them can be rotated and scaled
-Mode 2:	only two tile layers, but both can be rotated and scaled
-*/
-#define MODE0 0x00
-#define MODE1 0x01
-#define MODE2 0x02
+//enable bits for the four background layers and the sprite layer; OR them into REG_DCTRL to use them
+#define BG0_ENABLE 0x0100
+#define BG1_ENABLE 0x0200
+#define BG2_ENABLE 0x0400
+#define BG3_ENABLE 0x0800
+#define OBJ_ENABLE 0x1000
 
-/*
-These are the enable bits for the four background layers
-To use them to enable a background, you OR them into the display_control register
-*/
-#define BG0_ENABLE 0x100
-#define BG1_ENABLE 0x200
-#define BG2_ENABLE 0x400
-#define BG3_ENABLE 0x800
-
-//define a pointer to the GBA graphics control register
-#define DCTRL_REG (*(volatile unsigned long*) 0x4000000);
 //pointer to the GBA color palette register
-volatile unsigned short* bg_palette = (volatile unsigned short*) 0x5000000;
+#define REG_PALETTE *(volatile u16*) 0x05000000
 //GBA color palettes are always 256 colors
 #define PALETTE_SIZE 256
 
+//copies the contents of a palette array (typically from a grit header) into palette memory
+//TODO: verify this works
+static inline void load_palette(u16 new_palette[PALETTE_SIZE]) {
+	for(u8 i = 0; i < PALETTE_SIZE; i++)
+		(&REG_PALETTE)[i] = new_palette[i];
+}
 
-#define bg0_control (*(volatile unsigned short*) 0x4000008)
-#define bg1_control (*(volatile unsigned short*) 0x400000a)
-#define bg2_control (*(volatile unsigned short*) 0x400000c)
-#define bg3_control (*(volatile unsigned short*) 0x400000e)
+//these are similiar to the attributes of a sprite. each of the values in these registers packs a bunch of data into its bits
+#define bg0_control *(volatile u16*) 0x4000008
+#define bg1_control *(volatile u16*) 0x400000a
+#define bg2_control *(volatile u16*) 0x400000c
+#define bg3_control *(volatile u16*) 0x400000e
 
 //each of the four backgound layers has two registers to control their movement on the x and y axis
 //writing to these will move the corresponding background in the corresponding direction
-#define bg0_x_scroll (*(volatile short*) 0x4000010)
-#define bg0_y_scroll (*(volatile short*) 0x4000012)
-#define bg1_x_scroll (*(volatile short*) 0x4000014)
-#define bg1_y_scroll (*(volatile short*) 0x4000016)
-#define bg2_x_scroll (*(volatile short*) 0x4000018)
-#define bg2_y_scroll (*(volatile short*) 0x400001a)
-#define bg3_x_scroll (*(volatile short*) 0x400001c)
-#define bg3_y_scroll (*(volatile short*) 0x400001e)
+#define bg0_x_scroll *(volatile s16*) 0x4000010
+#define bg0_y_scroll *(volatile s16*) 0x4000012
+#define bg1_x_scroll *(volatile s16*) 0x4000014
+#define bg1_y_scroll *(volatile s16*) 0x4000016
+#define bg2_x_scroll *(volatile s16*) 0x4000018
+#define bg2_y_scroll *(volatile s16*) 0x400001a
+#define bg3_x_scroll *(volatile s16*) 0x400001c
+#define bg3_y_scroll *(volatile s16*) 0x400001e
 
 //scroll the specified background the given amounts
-static inline void scroll_bg(int bg, int x, int y)
+static inline void scroll_bg(const u16 background, const s16 x, const s16 y)
 {
 	//TODO:
 }
@@ -64,22 +57,17 @@ static inline void move_bg(int bg, int x, int y)
 	//TODO:
 }
 
-//TODO: why do i need this?
-//FIXME: give this a better name
-//when using tile modes, the GBA divides the VRAM into 4 blocks that are used to store the data for each background layer
-//to help keep these straight, these methods return pointers to the addresses of these blocks
-static inline volatile unsigned short* getBgBlockPtr(unsigned long block)
-{
-	return (volatile unsigned short*) (0x6000000 + (block * 0x4000));
-}
+//when using tile modes, the GBA divides the VRAM into 4 character blocks that are used to store the data for each background layer
+#define REG_CHBLOCK0 *(volatile s16*) 0x06000000
+#define REG_CHBLOCK1 *(volatile s16*) 0x06004000
+#define REG_CHBLOCK2 *(volatile s16*) 0x06008000
+#define REG_CHBLOCK3 *(volatile s16*) 0x0600c000
 
 //FIXME: why is this function necessary? i got it from the finlayson tutorial
 //each char are each divided into 8 screen blocks
-static inline volatile unsigned short* screen_block(unsigned long block)
+static inline volatile u16* screen_block(const u64 block)
 {
-	return (volatile unsigned short*) (0x6000000 + (block * 0x800));
+	return (volatile u16*) (&REG_VRAM + (block * 0x800));
 }
-
-//TODO:
 
 #endif

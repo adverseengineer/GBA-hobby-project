@@ -20,46 +20,6 @@ typedef struct {
 	u16 attribute2;
 	u16 attribute3;
 } Sprite;
-/*====================================================================================================
-Attribute 0
-	bits 0-7	y coordinate
-	bits 8,9	affine
-		used for specifying affine transformations
-	bits 10,11	effect
-		toggles between alpha-blending and masking
-	bit 12		mosaic
-		toggles the "mosaic effect"
-	bit 13		color mode
-		0 = 16-color
-		1 = 256-color
-	bits 14,15	shape
-		see below
-Attribute 1
-	bits 0-7	x coordinate
-	bits 9-11	unused
-	bit 12		h-flip
-		flips the sprite horizontally
-	bit 13		v-flip
-		flips the sprite vertically
-	bits 14,15	size
-Attribute 2
-	bits 0-9	tile index
-		the index of the first tile in the sprite.
-		//FIXME: add better information
-	bits 10,11	priority
-		used for layering. low appears over high. sprites appear over backgrounds of the same priority
-	bits 12-15	palette bank
-		only used for 16-bit color sprites
-Attribute 3
-	used internally by the gba to handle affine transformations
-======================================================================================================
-
-The dimensions of the sprite are determined by the size and shape properties, as per this table:
-			Size
-			0		1		2		3
-Shape	0	8x8		16x16	32x32	64x64
-		1	16x8	32x8	32x16	64x32
-		2	8x16	8x32	16x32	32x64 */
 
 //an array to store every sprite
 Sprite sprites[MAX_SPRITES];
@@ -67,7 +27,7 @@ Sprite sprites[MAX_SPRITES];
 int next_sprite_index = 0;
 //this isn't permanent, however. You can only update OAM during VBlank, so we copy this array to OAM using DMA
 
-//an enum of sprite sizes to simplify the lookup
+//an enum of sprite sizes to simplify the lookup for the shape and size bits
 const enum SpriteSize {
 	SIZE_8x8, SIZE_16x16, SIZE_32x32, SIZE_64x64,
 	SIZE_16x8, SIZE_32x8, SIZE_32x16, SIZE_64x32,
@@ -159,9 +119,11 @@ static inline void sprite_set_offset(Sprite* sprite, const u16 offset) {
 	sprite->attribute2 |= (offset & 0x03ff);
 }
 
+//TODO: finish the dma header before trying to fix this
+//NOTE: this is completely untested
 //copy the temp sprite array to OAM
 static inline void sprite_update_all() {
-	dma_memcpy16(REG_OAM, (u16*) sprites, MAX_SPRITES * sizeof(Sprite));
+	dma_memcpy16(&REG_OAM, (u16*) sprites, MAX_SPRITES * sizeof(Sprite));
 }
 
 #endif

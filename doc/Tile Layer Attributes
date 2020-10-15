@@ -1,0 +1,27 @@
+The GBA can handle 4 tile layers and one sprite layer. For more info on sprites, look at 'Sprite Attributes'
+For each background layer, there is a register to control the behaviour and properies of that layer. The value in the register packs several values into it's bits
+
+bits 0,1	priority
+	used for layering. low appears over high. sprites appear over backgrounds of the same priority
+bits 2,3	character
+	the index of the character block the image data for this background is stored in
+bits 4,5	unused
+bit 6		mosaic
+	toggles mosaic effect for this background
+bit 7		color mode
+	0 = 16-color
+	1 = 256-color
+bits 8-12	screen
+	the index of the screen block that stores the tile map data for this background
+bit 13		wrap
+	toggles whether the background wraps at the edges
+bits 14,15	size
+	the dimensions of the background
+
+
+Background size
+Value of size bits	Size as regular background		Size as affine (scalable & rotatable)
+0					32x32							16x16
+1					64x32							32x32
+2					32x64							64x64
+3					64x64							128x128
