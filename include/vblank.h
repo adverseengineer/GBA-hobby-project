@@ -13,6 +13,7 @@ Nick Sells
 //the value keeps increasing even during the vblank. it makes it to 227 before it starts over
 #define REG_VCOUNT (*(volatile unsigned short*) 0x04000006)
 
+//TODO: apparently this is inefficient, so as soon as i learn how to use interrupts, it needs to make use of them
 //waits for the the vblank, which is after the screen has been drawn but before the next one starts drawing
 static inline void wait_vblank()
 {
