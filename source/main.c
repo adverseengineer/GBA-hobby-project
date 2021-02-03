@@ -9,21 +9,29 @@ int main(void) {
 	tte_init_chr4c_default(0, BG_CBB(0) | BG_SBB(31));
 	tte_set_font(&sys8Font);
 
+	irq_init(NULL);
+	irq_enable(II_VBLANK);
+
 	sqran(SEED);
 
 	u32 room_data[HEIGHT * WIDTH];
 	u32 hwall_data[HEIGHT * WIDTH];
 	u32 vwall_data[HEIGHT * WIDTH];
 
+	char sb[64];
+	sprintf(sb, "addr of fn: %p", print_dungeon);
+	tte_write(sb);
+
 	build_dungeon(room_data, hwall_data, vwall_data, NUM_ITER, QUAD_FREQ, HORZ_FREQ, VERT_FREQ);
 	print_dungeon(room_data, hwall_data, vwall_data);
-	tte_set_pos(0, 0);
-
-	char str_buf[128];
-	sprintf(str_buf, "%s", " ");
-	tte_write(str_buf);
 
 	while (1) {
-		vid_vsync();
+		VBlankIntrWait();
+		key_poll();
+		if(key_hit(KEY_A)) {
+			tte_erase_screen();
+			build_dungeon(room_data, hwall_data, vwall_data, NUM_ITER, QUAD_FREQ, HORZ_FREQ, VERT_FREQ);
+			print_dungeon(room_data, hwall_data, vwall_data);
+		}
 	}
 }
