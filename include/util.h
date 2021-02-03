@@ -1,6 +1,6 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef UTIL
+#define UTIL
 
-const char* int_to_str(const int arg); //TODO: implement
+void ns_printf();
 
 #endif

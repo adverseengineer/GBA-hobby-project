@@ -31,6 +31,7 @@ SOURCES		:= source
 INCLUDES	:= include
 DATA		:=
 MUSIC		:=
+GRAPHICS	:= graphics #<========================================================================= MY EDIT
 
 #---------------------------------------------------------------------------------
 # options for code generation
@@ -79,6 +80,7 @@ export VPATH	:=	$(foreach dir,$(SOURCES),$(CURDIR)/$(dir)) \
 export DEPSDIR	:=	$(CURDIR)/$(BUILD)
 
 CFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
+CFILES		+=	$(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.c))) #<===================== MY EDIT
 CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
 SFILES		:=	$(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
 BINFILES	:=	$(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
