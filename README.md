@@ -1,7 +1,6 @@
-# GBA Hobby Project
-This is a simple hobby project that I'm using to brush up on C. Any constructive criticism is welcome because I have no idea what I'm doing.
+This is a hobby project that I'm using to brush up on C. Any constructive criticism is welcome because I have no idea what I'm doing.
 
-# Conventions
+Conventions I'm using:
 Left curly braces belong at the end of the line preceding them  
 Omit curly braces that only enclose one line  
 Short-circuit all `if` statements  
